@@ -1,0 +1,17 @@
+
+* Server and Client should look the same?
+* Look at GIT's replication
+* Use GUID's instead of incrementing IDs?
+
+High level overview of synchronisation:
+  If client haven't synced yet:
+    * Client asks remote for all scribes
+  Otherwise
+    * Client asks remote for scribes since last synced
+    
+  So, each client needs to record its synchronisation state with the other client. I.e. the last message received.
+
+
+
+
+Initially forget authentication.
