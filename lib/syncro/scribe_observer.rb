@@ -1,4 +1,4 @@
-module Syncer
+module Syncro
   class ScribeObserver < ActiveModel::Observer
     observe "Scriber::Scribe"
     

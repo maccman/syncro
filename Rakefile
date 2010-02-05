@@ -4,7 +4,7 @@ begin
     gemspec.name = "syncro"
     gemspec.summary = "Sync Ruby classes between clients."
     gemspec.email = "info@eribium.org"
-    gemspec.homepage = "http://github.com/maccman/syncer"
+    gemspec.homepage = "http://github.com/maccman/syncro"
     gemspec.description = "Sync Ruby classes between clients."
     gemspec.authors = ["Alex MacCaw"]
     gemspec.add_dependency("activesupport", ">=2.3.5")

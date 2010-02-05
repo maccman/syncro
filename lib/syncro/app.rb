@@ -19,7 +19,7 @@ module Syncro
         scribes = resp.map {|s| Scribe.new(s) }
         client.last_scribe = scribes.last
         scribes = scribes.select {|s| 
-          Syncer.klasses.include?(s.klass) 
+          Syncro.klasses.include?(s.klass) 
         }
         scribes.each {|s| s.play }
       }

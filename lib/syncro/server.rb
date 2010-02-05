@@ -1,4 +1,4 @@
-module Syncer
+module Syncro
   class Server < Client
     before_save :set_guid
     

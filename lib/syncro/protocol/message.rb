@@ -1,4 +1,4 @@
-module Syncer
+module Syncro
   module Protocol
     class Message < HashWithIndifferentAccess
       def self.fromJSON(str)

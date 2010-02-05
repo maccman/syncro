@@ -1,4 +1,4 @@
-module Syncer
+module Syncro
   module Protocol
     class MessageBuffer < StringIO
       # How much left to be read

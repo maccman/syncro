@@ -28,7 +28,7 @@ module Syncro
   
   module Model
     def self.included(base)
-      Syncer.klasses << base
+      Syncro.klasses << base
     end
   end
 end

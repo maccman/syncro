@@ -1,4 +1,4 @@
-module Syncer
+module Syncro
   class Response
     cattr_accessor :callbacks
     self.callbacks = {}
