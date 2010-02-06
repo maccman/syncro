@@ -11,14 +11,14 @@ module Syncro
   end
 
   def connect(client, io)
-    unless client.respond_to?(:receive_data)
+    unless client.is_a?(Client)
       client = Client.find_by_guid!(client)
     end
     client.connect(io)
   end
   
   def receive(client, data)
-    unless client.respond_to?(:receive_data)
+    unless client.is_a?(Client)
       client = Client.find_by_guid!(client)
     end
     client.receive(data)
