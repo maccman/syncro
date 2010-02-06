@@ -7,6 +7,22 @@ module Syncro
     
     attr_reader :connection
     
+    def connected?
+      !!@connection
+    end
+    
+    def connect(connection)
+      @connection = connection
+    end
+    
+    def sync
+      app.sync
+    end
+    
+    def add_scribe(scribe)
+      app.add_scribe(scribe)
+    end
+    
     def receive_data(data)
       buffer << data
       buffer.messages.each do |msg|
@@ -28,15 +44,6 @@ module Syncro
       app.call(message)
     end
     
-    def add_scribe(scribe)
-      app.add_scribe(scribe)
-    end
-    
-    def connect(io)
-      @connection = io
-      app.sync
-    end
-    
     def send_message(message)
       return unless connection
       if connection.respond_to?(:send_message)
@@ -47,10 +54,6 @@ module Syncro
       else
         connection.write(message.serialize)
       end
-    end
-    
-    def connected?
-      !!@connection
     end
     
     protected

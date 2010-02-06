@@ -15,8 +15,12 @@ module Syncro
     Client.find_or_create_by_guid(guid)
   end
 
-  def connect(client, io)
-    find_client(client).connect(io)
+  def connect(client, conn)
+    find_client(client).connect(conn)
+  end
+  
+  def sync(client)
+    find_client(client).sync
   end
   
   def receive_data(client, data)
