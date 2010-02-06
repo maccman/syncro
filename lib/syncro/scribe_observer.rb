@@ -6,3 +6,5 @@ module Syncro
     end
   end
 end
+
+SuperModel::Base.observers = Syncro::ScribeObserver

@@ -12,7 +12,7 @@ module Syncro
   
   def find_client(guid)
     return guid if guid.is_a?(Client)
-    Client.find_or_create_by_guid(client)
+    Client.find_or_create_by_guid(guid)
   end
 
   def connect(client, io)
@@ -39,3 +39,4 @@ require "syncro/client"
 require "syncro/scribe_observer"
 require "syncro/protocol/message"
 require "syncro/protocol/message_buffer"
+require "syncro/response"

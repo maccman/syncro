@@ -15,11 +15,10 @@ module Syncro
     
     def sync
       invoke(:sync, :from => client.last_scribe.try(:id)) {|resp|
-        scribes = resp.map {|s| Scribe.new(s) }
+        scribes = resp.map {|s| Scriber::Scribe.new(s) }
         client.last_scribe = scribes.last
-        scribes = scribes.select {|s| 
-          Syncro.klasses.include?(s.klass) 
-        }
+        allowed_classes = Syncro.klasses.map(&:to_s)
+        scribes = scribes.select {|s| allowed_classes.include?(s.klass) }
         scribes.each {|s| s.play }
       }
     end
@@ -32,9 +31,9 @@ module Syncro
       def invoke_sync
         result = begin
           if message[:from]
-            Scribe.since(message[:from])
+            Scriber::Scribe.since(message[:from])
           else
-            Scribe.all
+            Scriber::Scribe.all
           end
         end
         respond(result)
@@ -45,14 +44,14 @@ module Syncro
       end
     
       def invoke_response
-        Reponse.call(client, message[:result])
+        Response.call(client, message[:result])
       end
       
       def invoke(type, hash = {}, &block)
         message = Protocol::Message.new
         message.type = type
         message.merge!(hash)
-        Reponse.expect(client, &block)
+        Response.expect(client, &block)
         client.transmit(message)
       end
     

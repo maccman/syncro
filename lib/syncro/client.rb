@@ -8,8 +8,8 @@ module Syncro
     attr_reader :connection
     
     def receive(data)
-      @buffer << data
-      @buffer.messages.each do |msg|
+      buffer << data
+      buffer.messages.each do |msg|
         app.call(msg)
       end
     end
