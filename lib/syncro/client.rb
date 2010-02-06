@@ -7,11 +7,29 @@ module Syncro
     
     attr_reader :connection
     
-    def receive(data)
+    def receive_data(data)
       buffer << data
       buffer.messages.each do |msg|
-        app.call(msg)
+        receive_message(msg)
       end
+    end
+    
+    def receive_message(data)
+      message = begin
+        case data
+        when String
+          Protocol::Message.fromJSON(data)
+        when Protocol::Message
+          data
+        else
+          Protocol::Message.new(data)
+        end
+      end
+      app.call(message)
+    end
+    
+    def add_scribe(scribe)
+      app.add_scribe(scribe)
     end
     
     def connect(io)
@@ -19,14 +37,20 @@ module Syncro
       app.sync
     end
     
-    def transmit(message)
+    def send_message(message)
       return unless connection
-      if connection.respond_to?(:send_data)
+      if connection.respond_to?(:send_message)
+        connection.send_message(message)
+      elsif connection.respond_to?(:send_data)
         # EventMachine
         connection.send_data(message.serialize)
       else
         connection.write(message.serialize)
       end
+    end
+    
+    def connected?
+      !!@connection
     end
     
     protected

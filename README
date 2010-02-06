@@ -1,17 +1,74 @@
+Syncro let's you synchronise Ruby classes and state between remote clients.
 
-* Server and Client should look the same?
-* Look at GIT's replication
-* Use GUID's instead of incrementing IDs?
+Using the Scriber gem (http://github.com/maccman/scriber), you can record class changes.
+Then, Syncro will take those changes, and synchronise them between two clients.
 
-High level overview of synchronisation:
-  If client haven't synced yet:
-    * Client asks remote for all scribes
-  Otherwise
-    * Client asks remote for scribes since last synced
-    
-  So, each client needs to record its synchronisation state with the other client. I.e. the last message received.
+Syncro leaves the connection management up to you. You can use EventMachine, or Ruby TCPSockets - 
+basically anything that implements the "write" method.
 
+Each client is represented by a GUID. Even if your architecture isn't P2P clients, the server is 
+considered a "client", and needs a GUID too (even if that's just the string "server").
 
+To synchronize a class you need to:
+  * Implement "Scriber" on that class (see Scriber gem)
+  * Include Syncro::Model on that class
+  * Call the following upon connection:
+      Syncro.connect(client_guid, socket_connection)
+  * Call the following when the connection receives data:
+      Syncro.receive(client_guid, data)
+      
+That's it! 
 
+The SuperModel gem (http://github.com/maccman/supermodel) already has support for 
+Scriber. You just need to include SuperModel::Scriber::Model in you model.
 
-Initially forget authentication.
+The following is an example of using EM, SuperModel and Syncro.
+Any changes to the class "Test" will be reflected across both clients:
+
+  require "syncro"
+  require "eventmachine"
+
+  class Test < SuperModel::Base
+    include SuperModel::Persist::Model
+    include SuperModel::Scriber::Model
+    include Syncro::Model
+  end
+
+  class MyConnection < EM::Connection
+    def post_init
+      Syncro.connect("server", self)
+    end
+  
+    def receive_data(data)
+      puts "Received: #{data}"
+      Syncro.receive_data("server", data)
+    end
+  end
+
+  SuperModel::Persist.path = "dump.db"
+  SuperModel::Persist.load
+
+  at_exit {
+    SuperModel::Persist.dump
+  }
+
+  EM.run {
+    EM.connect("0.0.0.0", 10000, MyConnection)
+  }
+  
+== Protocol
+
+Syncro uses a very simple JSON protocol. 
+Each message is a JSON hash. The only mandatory field is "type".
+{"type" => "foo", ...}
+
+Each message is preceded by a Short int, representing the message size.
+For example, in Ruby:
+  data = {:type => "foo", :bar => 1}
+  message = [data.length].pack('n') + data
+
+At the moment, there are only two types of message:
+  * sync (args: from)
+  * add_scribe (args: scribe)
+  
+Have a look at app.rb for implementation details.

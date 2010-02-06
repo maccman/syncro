@@ -3,6 +3,7 @@ module Syncro
     observe "Scriber::Scribe"
     
     def after_save(scribe)
+      Client.all.each {|c| c.add_scribe(scribe) }
     end
   end
 end

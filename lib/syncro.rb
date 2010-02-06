@@ -19,8 +19,12 @@ module Syncro
     find_client(client).connect(io)
   end
   
-  def receive(client, data)
-    find_client(client).receive(data)
+  def receive_data(client, data)
+    find_client(client).receive_data(data)
+  end
+  
+  def receive_message(client, data)
+    find_client(client).receive_message(data)
   end
   
   extend self
@@ -32,7 +36,7 @@ module Syncro
   end
 end
 
-$: << File.dirname(__FILE__)
+$:.unshift(File.dirname(__FILE__))
 
 require "syncro/app"
 require "syncro/client"

@@ -9,22 +9,20 @@ module Syncro
     def call(message)
       @message = message
       method   = "invoke_#{message.type}"
-      send(method)
-    rescue NoMethodError
+      send(method) if respond_to?(method)
     end
     
     def sync
       invoke(:sync, :from => client.last_scribe.try(:id)) {|resp|
         scribes = resp.map {|s| Scriber::Scribe.new(s) }
         client.last_scribe = scribes.last
-        allowed_classes = Syncro.klasses.map(&:to_s)
-        scribes = scribes.select {|s| allowed_classes.include?(s.klass) }
+        scribes = scribes.select {|s| allowed_klasses.include?(s.klass) }
         scribes.each {|s| s.play }
       }
     end
     
     def add_scribe(scribe)
-      invoke(:add_scribe, scribe)
+      invoke(:add_scribe, :scribe => scribe)
     end
 
     protected    
@@ -40,11 +38,17 @@ module Syncro
       end
       
       def invoke_add_scribe
-        
+        scribe = Scriber::Scribe.new(message[:scribe])
+        return unless allowed_klasses.include?(scribe)
+        scribe.play
       end
     
       def invoke_response
         Response.call(client, message[:result])
+      end
+      
+      def allowed_klasses
+        Syncro.klasses.map(&:to_s)
       end
       
       def invoke(type, hash = {}, &block)
@@ -52,14 +56,14 @@ module Syncro
         message.type = type
         message.merge!(hash)
         Response.expect(client, &block)
-        client.transmit(message)
+        client.send_message(message)
       end
     
       def respond(res)
         message = Protocol::Message.new
         message.type = :response
         message[:result] = res
-        client.transmit(message)
+        client.send_message(message)
       end
   end
 end

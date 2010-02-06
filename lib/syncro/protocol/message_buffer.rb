@@ -25,7 +25,7 @@ module Syncro
             back(2 + msg.length)
             break
           end
-          messages << Message.fromJSON(msg)
+          messages << msg
         end
         trim
         wind
