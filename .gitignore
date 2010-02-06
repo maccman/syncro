@@ -2,3 +2,4 @@ pkg
 test.rb
 test_client.rb
 test_server.rb
+dump.db

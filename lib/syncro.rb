@@ -9,19 +9,18 @@ module Syncro
   def klasses
     @klasses ||= []
   end
+  
+  def find_client(guid)
+    return guid if guid.is_a?(Client)
+    Client.find_or_create_by_guid(client)
+  end
 
   def connect(client, io)
-    unless client.is_a?(Client)
-      client = Client.find_by_guid!(client)
-    end
-    client.connect(io)
+    find_client(client).connect(io)
   end
   
   def receive(client, data)
-    unless client.is_a?(Client)
-      client = Client.find_by_guid!(client)
-    end
-    client.receive(data)
+    find_client(client).receive(data)
   end
   
   extend self
@@ -37,7 +36,6 @@ $: << File.dirname(__FILE__)
 
 require "syncro/app"
 require "syncro/client"
-require "syncro/server"
 require "syncro/scribe_observer"
 require "syncro/protocol/message"
 require "syncro/protocol/message_buffer"

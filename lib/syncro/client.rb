@@ -1,7 +1,8 @@
 module Syncro
-  class Client < ActiveModel::Base
-    include ActiveModel::Persist::Model
+  class Client < SuperModel::Base
+    include SuperModel::Persist::Model
     
+    attributes :guid, :last_scribe
     validates_presence_of :guid
     
     attr_reader :connection

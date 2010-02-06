@@ -14,8 +14,7 @@ module Syncro
     end
     
     def sync
-      last_scribe = client.last_scribe?
-      invoke(:sync, :from => last_scribe.try(:id)) {|resp|
+      invoke(:sync, :from => client.last_scribe.try(:id)) {|resp|
         scribes = resp.map {|s| Scribe.new(s) }
         client.last_scribe = scribes.last
         scribes = scribes.select {|s| 
