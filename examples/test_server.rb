@@ -3,7 +3,7 @@ require "eventmachine"
 require "supermodel"
 
 class Test < SuperModel::Base
-  include SuperModel::Persist::Model
+  include SuperModel::Marshal::Model
   include SuperModel::Scriber::Model
   include Syncro::Model
 end
@@ -24,11 +24,11 @@ class MyConnection < EM::Connection
   end
 end
 
-SuperModel::Persist.path = "dump.db"
-SuperModel::Persist.load
+SuperModel::Marshal.path = "dump.db"
+SuperModel::Marshal.load
 
 at_exit {
-  SuperModel::Persist.dump
+  SuperModel::Marshal.dump
 }
 
 unless $0 =~ /irb/

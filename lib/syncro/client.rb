@@ -1,6 +1,6 @@
 module Syncro
   class Client < SuperModel::Base
-    include SuperModel::Persist::Model
+    include SuperModel::Marshal::Model
     
     attributes :guid, :last_scribe
     validates_presence_of :guid
@@ -54,6 +54,10 @@ module Syncro
       else
         connection.write(message.serialize)
       end
+    end
+    
+    def to_s
+      guid
     end
     
     protected

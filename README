@@ -29,7 +29,7 @@ Any changes to the class "Test" will be reflected across both clients:
   require "eventmachine"
 
   class Test < SuperModel::Base
-    include SuperModel::Persist::Model
+    include SuperModel::Marshal::Model
     include SuperModel::Scriber::Model
     include Syncro::Model
   end
@@ -45,11 +45,11 @@ Any changes to the class "Test" will be reflected across both clients:
     end
   end
 
-  SuperModel::Persist.path = "dump.db"
-  SuperModel::Persist.load
+  SuperModel::Marshal.path = "dump.db"
+  SuperModel::Marshal.load
 
   at_exit {
-    SuperModel::Persist.dump
+    SuperModel::Marshal.dump
   }
 
   EM.run {
