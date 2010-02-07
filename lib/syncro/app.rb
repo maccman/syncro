@@ -29,9 +29,9 @@ module Syncro
       def invoke_sync
         result = begin
           if message[:from]
-            Scriber::Scribe.since(message[:from])
+            Scriber::Scribe.since(client, message[:from])
           else
-            Scriber::Scribe.all
+            Scriber::Scribe.all(client)
           end
         end
         respond(result)
