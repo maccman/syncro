@@ -4,31 +4,38 @@ require "supermodel"
 
 class Test < SuperModel::Base
   include SuperModel::Marshal::Model
-  include SuperModel::Scriber::Model
   include Syncro::Model
+  
+  def scribe_clients
+    [:client_uuid1, :client_uuid2]
+  end
 end
 
 class MyConnection < EM::Connection
   def post_init
-    Syncro.connect("client-guid", self)
+    @client = Syncro::Client.for(:client_uuid1)
+    @client.connect(self)
+    @client.sync
   end
   
   def receive_data(data)
     puts "Received: #{data}"
-    Syncro.receive_data("client-guid", data)
+    @client.receive_data(data)
   end
   
   def send_data(data)
     puts "Sending: #{data}"
     super(data)
   end
+  
+  def unbind
+    @client.disconnect
+  end
 end
 
-class Syncro::Client
-  include SuperModel::Marshal::Model
-end
+require "syncro/marshal"
 
-SuperModel::Marshal.path = "dump.db"
+SuperModel::Marshal.path = "dump_server.db"
 SuperModel::Marshal.load
 
 at_exit {

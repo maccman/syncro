@@ -9,8 +9,9 @@ end
 
 class MyConnection < EM::Connection
   def post_init
-    @client = Syncro::Client.find_or_create_by_uid("server")
+    @client = Syncro::Client.for(:server)
     @client.connect(self)
+    @client.sync
   end
   
   def receive_data(data)
@@ -28,11 +29,9 @@ class MyConnection < EM::Connection
   end
 end
 
-class Syncro::Client
-  include SuperModel::Marshal::Model
-end
+require "syncro/marshal"
 
-SuperModel::Marshal.path = "dump.db"
+SuperModel::Marshal.path = "dump_client.db"
 SuperModel::Marshal.load
 
 at_exit {

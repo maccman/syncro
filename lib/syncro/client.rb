@@ -1,12 +1,14 @@
 module Syncro
   class Client < SuperModel::Base
+    include SuperModel::RandomID
+    
     class << self
       def for(uid)
         find_or_create_by_uid(uid)
       end
     end
     
-    attributes :uid, :last_scribe
+    attributes :uid, :last_scribe_id
     
     attr_reader :connection
     
@@ -19,7 +21,6 @@ module Syncro
     end
     
     def disconnect
-      self.destroy
     end
     
     def sync

@@ -6,23 +6,23 @@ module Syncro
         base.extend ClassMethods
         base.add_observer(Observer.instance)
       end
+      
+      def scribe_clients
+        []
+      end
 
       module ClassMethods
         def scribe_play(scribe) #:nodoc:
           Observer.disable(scribe.clients) do
-            case scribe.type
+            case scribe.type.to_sym
             when :create  then create(scribe.data)
+            when :update  then update(scribe.data[0], scribe.data[1])
             when :destroy then destroy(scribe.data)
-            when :update  then update(scribe.data)
             else
-              method = "scribe_play_#{type}"
+              method = "scribe_play_#{scribe.type}"
               send(method) if respond_to?(method)
             end
           end
-        end
-
-        def scribe_clients
-          []
         end
 
         def record(type, data = nil, clients = [])

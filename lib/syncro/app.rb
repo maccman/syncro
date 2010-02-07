@@ -13,12 +13,23 @@ module Syncro
     end
     
     def sync
-      invoke(:sync, :from => client.last_scribe.try(:id)) {|resp|
-        scribes = resp.map {|s| Scriber::Scribe.new(s) }
-        client.last_scribe = scribes.last
-        scribes = scribes.select {|s| allowed_klasses.include?(s.klass) }
-        scribes.each {|s| s.play }
-      }
+      invoke(:sync, :from => client.last_scribe_id) do |resp|
+        scribes = resp.map {|s| 
+          scribe = Scriber::Scribe.new(s)
+          scribe.clients = []
+          scribe.clients << client.to_s
+          scribe
+        }
+        allowed_scribes = scribes.select {|s| allowed_klasses.include?(s.klass) }
+        allowed_scribes.each {|s| s.play }
+        
+        if scribes.any?
+          client.update_attribute(
+            :last_scribe_id, 
+            scribes.last.id
+          )
+        end
+      end
     end
     
     def add_scribe(scribe)

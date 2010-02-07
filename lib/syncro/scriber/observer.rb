@@ -30,12 +30,12 @@ module Syncro
         }
         rec.class.record(
           :update, 
-          changed_to, 
+          [rec.id, changed_to], 
           active_clients(rec)
         )
       end
       
-      def after_destroy
+      def after_destroy(rec)
         rec.class.record(
           :destroy, 
           rec.id, 
@@ -44,6 +44,9 @@ module Syncro
       end
             
       def update(observed_method, object) #:nodoc:
+        # Sending to clients is disabled
+        return unless object.scribe_clients
+        # Clients specified, but no non-disabled clients to send too
         return if object.scribe_clients.any? && active_clients(object).empty?
         send(observed_method, object) if respond_to?(observed_method)
       end

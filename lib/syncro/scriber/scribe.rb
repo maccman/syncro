@@ -1,11 +1,14 @@
 module Syncro
   module Scriber
     class Scribe < SuperModel::Base
+      include SuperModel::RandomID
+      
       class << self
         def since(client, id)
           record = find(id)
           index  = records.index(record)
-          items  = records.slice(index + 1, -1)
+          items  = records.slice((index + 1)..-1)
+          return [] unless items
           items  = items.select {|item| 
             item.clients.blank? || item.clients.include?(client) 
           }
@@ -33,9 +36,9 @@ module Syncro
         write_attribute(:klass, klass.to_s)
       end
       
-      def clients=(clients)
-        return if clients.blank?
-        write_attribute(:clients, clients.map(&:to_s))
+      def to_json(options = {})
+        options[:except] = :clients
+        super(options)
       end
     end
   end
