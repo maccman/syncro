@@ -1,9 +1,12 @@
 module Syncro
   class Client < SuperModel::Base
-    include SuperModel::Marshal::Model
+    class << self
+      def for(uid)
+        find_or_create_by_uid(uid)
+      end
+    end
     
-    attributes :guid, :last_scribe
-    validates_presence_of :guid
+    attributes :uid, :last_scribe
     
     attr_reader :connection
     
@@ -13,6 +16,10 @@ module Syncro
     
     def connect(connection)
       @connection = connection
+    end
+    
+    def disconnect
+      self.destroy
     end
     
     def sync
@@ -49,7 +56,6 @@ module Syncro
       if connection.respond_to?(:send_message)
         connection.send_message(message)
       elsif connection.respond_to?(:send_data)
-        # EventMachine
         connection.send_data(message.serialize)
       else
         connection.write(message.serialize)
@@ -57,7 +63,7 @@ module Syncro
     end
     
     def to_s
-      guid
+      uid || id
     end
     
     protected

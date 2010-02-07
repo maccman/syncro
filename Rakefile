@@ -8,7 +8,7 @@ begin
     gemspec.description = "Sync Ruby classes between clients."
     gemspec.authors = ["Alex MacCaw"]
     gemspec.add_dependency("activesupport", ">=2.3.5")
-    gemspec.add_dependency("scriber", ">=0.0.1")
+    gemspec.add_dependency("supermodel",    ">=0.0.1")
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install jeweler"

@@ -24,6 +24,10 @@ class MyConnection < EM::Connection
   end
 end
 
+class Syncro::Client
+  include SuperModel::Marshal::Model
+end
+
 SuperModel::Marshal.path = "dump.db"
 SuperModel::Marshal.load
 

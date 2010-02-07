@@ -4,24 +4,32 @@ require "supermodel"
 
 class Test < SuperModel::Base
   include SuperModel::Marshal::Model
-  include SuperModel::Scriber::Model
   include Syncro::Model
 end
 
 class MyConnection < EM::Connection
   def post_init
-    Syncro.connect("server", self)
+    @client = Syncro::Client.find_or_create_by_uid("server")
+    @client.connect(self)
   end
   
   def receive_data(data)
     puts "Received: #{data}"
-    Syncro.receive_data("server", data)
+    @client.receive_data(data)
   end
   
   def send_data(data)
     puts "Sending: #{data}"
     super(data)
   end
+  
+  def unbind
+    @client.disconnect
+  end
+end
+
+class Syncro::Client
+  include SuperModel::Marshal::Model
 end
 
 SuperModel::Marshal.path = "dump.db"

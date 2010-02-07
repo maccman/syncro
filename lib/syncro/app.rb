@@ -41,6 +41,8 @@ module Syncro
         scribe = Scriber::Scribe.new(message[:scribe])
         return unless allowed_klasses.include?(scribe)
         scribe.play
+      ensure
+        respond
       end
     
       def invoke_response
@@ -59,7 +61,7 @@ module Syncro
         client.send_message(message)
       end
     
-      def respond(res)
+      def respond(res = nil)
         message = Protocol::Message.new
         message.type = :response
         message[:result] = res
