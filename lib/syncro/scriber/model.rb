@@ -13,6 +13,7 @@ module Syncro
 
       module ClassMethods
         def scribe_play(scribe) #:nodoc:
+          return unless scribe_authorized?(scribe)
           Observer.disable(scribe.clients) do
             case scribe.type.to_sym
             when :create  then create(scribe.data)
@@ -33,6 +34,10 @@ module Syncro
             :clients => clients
           }
           Scribe.create(options)
+        end
+        
+        def scribe_authorized?(scribe)
+          true
         end
       end
     end
