@@ -16,7 +16,6 @@ module Syncro
       end
       
       def serialize
-        self[:ua] = :syncro
         data = self.to_json
         [data.length].pack('n') + data
       end    
