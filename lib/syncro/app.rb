@@ -50,7 +50,9 @@ module Syncro
       
       def invoke_add_scribe
         scribe = Scriber::Scribe.new(message[:scribe])
-        return unless allowed_klasses.include?(scribe)
+        scribe.clients = []
+        scribe.clients << client.to_s
+        return unless allowed_klasses.include?(scribe.klass)
         scribe.play
       ensure
         respond
