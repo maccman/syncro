@@ -8,16 +8,14 @@ module Syncro
       end
     end
     
-    attributes :uid, :last_scribe_id
-    
-    attr_reader :connection
-    
+    attributes :uid, :connection, :last_scribe_id
+        
     def connected?
-      !!@connection
+      !!self.connection
     end
     
     def connect(connection)
-      @connection = connection
+      self.connection = connection
     end
     
     def disconnect
@@ -65,6 +63,12 @@ module Syncro
     
     def to_s
       uid || id
+    end
+          
+    def serializable_hash(options = {})
+      options[:except] ||= []
+      options[:except] << :connection
+      super(options)
     end
     
     protected
