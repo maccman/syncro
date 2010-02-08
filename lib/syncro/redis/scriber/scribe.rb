@@ -2,7 +2,7 @@ module Syncro
   module Redis
     module Scriber
       class Scribe < Scriber::Scribe
-        include SuperModel::Redis
+        include SuperModel::Redis::Model
         
         class << self
           def since(client, id)
