@@ -7,7 +7,7 @@ begin
     gemspec.homepage = "http://github.com/maccman/syncro"
     gemspec.description = "Sync Ruby classes between clients."
     gemspec.authors = ["Alex MacCaw"]
-    gemspec.add_dependency("activesupport", ">=2.3.5")
+    gemspec.add_dependency("activesupport", ">=3.0.0.beta")
     gemspec.add_dependency("supermodel",    ">=0.0.1")
   end
 rescue LoadError

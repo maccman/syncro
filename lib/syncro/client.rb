@@ -53,7 +53,7 @@ module Syncro
     end
     
     def send_message(message)
-      return unless connection
+      return unless connected?
       if connection.respond_to?(:send_message)
         connection.send_message(message)
       elsif connection.respond_to?(:send_data)
