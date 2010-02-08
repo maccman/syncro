@@ -1,6 +1,6 @@
 module Syncro
   module Redis
-    class Client < Syncro::Client
+    class Syncro::Client
       include SuperModel::Redis::Model
       indexes :uid
     end
