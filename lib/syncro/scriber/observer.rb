@@ -10,8 +10,9 @@ module Syncro
         
         def disable(clients, &block)
           @disabled_clients = clients
-          yield
+          result = yield
           @disabled_clients = nil
+          result
         end
       end
    
