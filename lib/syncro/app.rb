@@ -54,8 +54,11 @@ module Syncro
         scribe.clients << client.to_s
         return unless allowed_klasses.include?(scribe.klass)
         scribe.play
-      ensure
-        respond
+        respond(true)
+        client.update_attribute(
+          :last_scribe_id, 
+          scribe.id
+        )
       end
     
       def invoke_response
