@@ -2,7 +2,7 @@ module Syncro
   module Scriber
     class Observer
       include Singleton
-      class_attribute :ar_observed_methods
+      class_attribute :observed_methods
       self.observed_methods = []
       
       class << self
