@@ -16,8 +16,7 @@ module Syncro
       invoke(:sync, :from => client.last_scribe_id) do |resp|
         scribes = resp.map {|s| 
           scribe = Scriber::Scribe.new(s)
-          scribe.clients = []
-          scribe.clients << client.to_s
+          scribe.from_client = client.to_s
           scribe
         }
         allowed_scribes = scribes.select {|s| allowed_klasses.include?(s.klass) }
@@ -42,7 +41,7 @@ module Syncro
           if message[:from]
             Scriber::Scribe.since(client, message[:from])
           else
-            Scriber::Scribe.all(client)
+            Scriber::Scribe.for_client(client)
           end
         end
         respond(result)
@@ -50,8 +49,7 @@ module Syncro
       
       def invoke_add_scribe
         scribe = Scriber::Scribe.new(message[:scribe])
-        scribe.clients = []
-        scribe.clients << client.to_s
+        scribe.from_client = client.to_s
         return unless allowed_klasses.include?(scribe.klass)
         scribe.play
         respond(true)

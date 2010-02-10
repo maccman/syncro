@@ -62,7 +62,7 @@ module Syncro
     end
     
     def to_s
-      uid || id
+      (uid || id).to_s
     end
           
     def serializable_hash(options = {})

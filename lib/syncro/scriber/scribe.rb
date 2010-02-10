@@ -10,22 +10,28 @@ module Syncro
           items  = records.slice((index + 1)..-1)
           return [] unless items
           items  = items.select {|item| 
-            item.clients.blank? || item.clients.include?(client) 
+            item.clients.blank? || item.clients.include?(client.to_s) 
+          }
+          items  = items.reject {|item|
+            item.from_client == client
           }
           items.dup
         rescue SuperModel::UnknownRecord
           []
         end
       
-        def all(client)
+        def for_client(client)
           items = records.select {|item| 
-            item.clients.blank? || item.clients.include?(client) 
+            item.clients.blank? || item.clients.include?(client.to_s) 
+          }
+          items  = items.reject {|item|
+            item.from_client == client.to_s
           }
           items.dup
         end
       end
     
-      attributes :klass, :type, :data, :clients
+      attributes :klass, :type, :data, :clients, :from_client
       validates_presence_of :klass, :type
   
       def play
@@ -37,7 +43,9 @@ module Syncro
       end
       
       def to_json(options = {})
-        options[:except] = :clients
+        options[:except] ||= []
+        options[:except] << :clients
+        options[:except] << :from_client
         super(options)
       end
     end

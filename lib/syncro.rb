@@ -1,6 +1,10 @@
 gem "supermodel"
 require "supermodel"
 
+gem "activesupport"
+require "active_support"
+require "active_support/core_ext/class/attribute"
+
 module Syncro
   class SyncroError < StandardError; end
   
@@ -22,3 +26,4 @@ require "syncro/scriber"
 require "syncro/scriber/model"
 require "syncro/scriber/observer"
 require "syncro/scriber/scribe"
+require "syncro/scriber/scribe_observer"
