@@ -33,7 +33,7 @@ module Syncro
       end
       
       def after_update(rec)
-        changed_to = rec.previous_changes.inject({}) {|hash, (key, (from, to))| 
+        changed_to = rec.changes.inject({}) {|hash, (key, (from, to))| 
           hash[key] = to
           hash 
         }
