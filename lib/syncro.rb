@@ -18,11 +18,13 @@ $:.unshift(File.dirname(__FILE__))
 
 require "syncro/app"
 require "syncro/client"
+require "syncro/base"
 require "syncro/model"
 require "syncro/protocol/message"
 require "syncro/protocol/message_buffer"
 require "syncro/response"
 require "syncro/scriber"
+require "syncro/scriber/base"
 require "syncro/scriber/model"
 require "syncro/scriber/observer"
 require "syncro/scriber/scribe"

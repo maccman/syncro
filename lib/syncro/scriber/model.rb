@@ -2,13 +2,9 @@ module Syncro
   module Scriber
     module Model
       def self.included(base)
-        Scriber.klasses << base
+        base.send :include, Base
         base.extend ClassMethods
         Observer.instance.add_observer!(base)
-      end
-      
-      def scribe_clients
-        :all
       end
 
       module ClassMethods
@@ -24,14 +20,6 @@ module Syncro
               send(method) if respond_to?(method)
             end
           end
-        end
-
-        def record(type, options = {})
-          options.merge!({
-            :klass   => self, 
-            :type    => type
-          })
-          Scribe.create(options)
         end
         
         def scribe_authorized?(scribe)
