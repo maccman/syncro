@@ -19,7 +19,7 @@ To synchronize a class you need to:
       
 That's it! 
 
-The SuperModel gem (http://github.com/maccman/supermodel) already has support for 
+The SuperModel gem ( http://github.com/maccman/supermodel ) already has support for 
 Scriber. You just need to include SuperModel::Scriber::Model in you model.
 
 The following is an example of using EM, SuperModel and Syncro.
