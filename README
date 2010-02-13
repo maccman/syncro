@@ -1,6 +1,6 @@
 Syncro let's you synchronise Ruby classes and state between remote clients.
 
-Using the Scriber gem (http://github.com/maccman/scriber), you can record class changes.
+Using the Scriber gem ( http://github.com/maccman/scriber ), you can record class changes.
 Then, Syncro will take those changes, and synchronise them between two clients.
 
 Syncro leaves the connection management up to you. You can use EventMachine, or Ruby TCPSockets - 
