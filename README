@@ -1,47 +1,101 @@
 Syncro let's you synchronise Ruby classes and state between remote clients.
+Syncro also supports offline sync.
 
-Using the Scriber gem (http://github.com/maccman/scriber), you can record class changes.
-Then, Syncro will take those changes, and synchronise them between two clients.
+You can record changes to a Ruby class, then Syncro will replay them on a remote client,
+synchronising state between the two.
 
-Syncro leaves the connection management up to you. You can use EventMachine, or Ruby TCPSockets - 
-basically anything that implements the "write" method.
+Syncro leaves the connection management up to you. You can use any networking library (EventMachine/TCPSockets etc).
 
 Each client is represented by a GUID. Even if your architecture isn't P2P clients, the server is 
 considered a "client", and needs a GUID too (even if that's just the string "server").
 
+Syncro is already setup to support ActiveModel compliant classes (such as ActiveRecord/SuperModel).
+For example, to Synchronise a ActiveRecord class:
+
+class TestSync < ActiveRecord::Base
+  include Syncro::Model
+end
+
+If you want to use Syncro with non ActiveModel compliant classes, you need to implement the class method "sync_play",
+and create Syncro::Scriber::Scribe objects whenever the class changes - checkout Syncro::Scriber::Model and Syncro::Scriber::Observer.
+
 To synchronize a class you need to:
-  * Implement "Scriber" on that class (see Scriber gem)
   * Include Syncro::Model on that class
   * Call the following upon connection:
-      Syncro.connect(client_guid, socket_connection)
+      @client = Syncro::Client.for(:client_uuid1)
+      @client.connect(connection_instance)
+      @client.sync
   * Call the following when the connection receives data:
-      Syncro.receive(client_guid, data)
+      @client.receive_data(data)
+  * Call the following when the client disconnects:
+      @client.disconnect
       
-That's it! 
+That's it!
 
-The SuperModel gem (http://github.com/maccman/supermodel) already has support for 
-Scriber. You just need to include SuperModel::Scriber::Model in you model.
+Have a look at the example test client and server.
+
+= More information
+
+To Syncro, everything is a client - event the server. Every client is represented by a unique identifier.
+This could be a client ID, or in the case of a server a fixed string.
+
+Each client records changes to its classes. When a class changes, a 'Scribe' is created detailing that change.
+Replaying that Scribe on remote client synchronises class state.
+
+When a client synchronises, it asks the remote client for all Scribes since the last sync. The client then replays
+the Scribes, synchronising state. The remote client then does the same. If the clients are connected, and a Scribe
+is created, the remote client is immediately notified.
+
+When clients connect for the first time, client objects are created. These record the time synchronisation happened (the last Scribe they've processed).
+
+Scribes & Clients can be stored in two ways:
+  * Marshalled to disk (see SuperModel::Marshal)
+  * On Redis
+ActiveRecord support hasn't been added (but could be easily).
+
+You should use Redis on the server for performance reasons.
+
+= Limiting access
+
+By default, all model changes are synced with everyone. This isn't ideal for a lot of use cases - for example if a user had many 
+pages, those pages are specific to the user and shouldn't be synced with anyone else.
+
+To limit access, you need to implement the following methods on the class.
+
+def scribe_clients
+ [authed_client_uuid1, authed_client_uuid2]
+end
+
+def self.scribe_authorized?(scribe)
+  # Check scribe.type and scribe.from_client
+  # to work out if the client is authorised to
+  # synchronise this scribe.
+end
+
+= Quick example
 
 The following is an example of using EM, SuperModel and Syncro.
 Any changes to the class "Test" will be reflected across both clients:
 
   require "syncro"
+  require "syncro/marshal"
   require "eventmachine"
 
   class Test < SuperModel::Base
     include SuperModel::Marshal::Model
-    include SuperModel::Scriber::Model
     include Syncro::Model
   end
 
   class MyConnection < EM::Connection
-    def post_init
-      Syncro.connect("server", self)
+    def connection_complete
+      @client = Syncro::Client.for(:server)
+      @client.connect(self)
+      @client.sync
     end
   
     def receive_data(data)
       puts "Received: #{data}"
-      Syncro.receive_data("server", data)
+      @client.receive_data(data)
     end
   end
 
@@ -62,7 +116,7 @@ Syncro uses a very simple JSON protocol.
 Each message is a JSON hash. The only mandatory field is "type".
 {"type" => "foo", ...}
 
-Each message is preceded by a Short int, representing the message size.
+Each message is preceded by a short int, representing the message size.
 For example, in Ruby:
   data = {:type => "foo", :bar => 1}
   message = [data.length].pack('n') + data
@@ -72,3 +126,13 @@ At the moment, there are only two types of message:
   * add_scribe (args: scribe)
   
 Have a look at app.rb for implementation details.
+
+If the messages are split up already, i.e. you don't need the binary length preceding 
+the message, you can instead use the method @client.receive_message(json_string_or_hash)
+This is particular useful for WebSocket clients.
+
+== Roadmap
+
+* A JavaScript Syncro client for web apps that have offline capabilities, and can use WebSockets to
+  sync with the server. WebSockets should be on the iPhone/iPad soon.
+* Easier protocol extensions, for things like authenticating clients (which are done by subclassing atm).

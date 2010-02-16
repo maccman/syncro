@@ -8,7 +8,7 @@ class Test < SuperModel::Base
 end
 
 class MyConnection < EM::Connection
-  def post_init
+  def connection_complete
     @client = Syncro::Client.for(:server)
     @client.connect(self)
     @client.sync
