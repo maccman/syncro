@@ -10,7 +10,7 @@ Each client is represented by a GUID. Even if your architecture isn't P2P client
 considered a "client", and needs a GUID too (even if that's just the string "server").
 
 Syncro is already setup to support ActiveModel compliant classes (such as ActiveRecord/SuperModel).
-For example, to Synchronise a ActiveRecord class:
+For example, to synchronise a ActiveRecord class:
 
 class TestSync < ActiveRecord::Base
   include Syncro::Model
@@ -36,29 +36,28 @@ Have a look at the example test client and server.
 
 = More information
 
-To Syncro, everything is a client - event the server. Every client is represented by a unique identifier.
+To Syncro, everything is a client - even the server. Every client is represented by a unique identifier.
 This could be a client ID, or in the case of a server a fixed string.
 
 Each client records changes to its classes. When a class changes, a 'Scribe' is created detailing that change.
-Replaying that Scribe on remote client synchronises class state.
+Replaying that Scribe on remote clients synchronises class state.
 
 When a client synchronises, it asks the remote client for all Scribes since the last sync. The client then replays
 the Scribes, synchronising state. The remote client then does the same. If the clients are connected, and a Scribe
 is created, the remote client is immediately notified.
 
-When clients connect for the first time, client objects are created. These record the time synchronisation happened (the last Scribe they've processed).
+When clients connect for the first time, client objects are created. These record the time synchronisation happened (the last Scribe they processed).
 
 Scribes & Clients can be stored in two ways:
-  * Marshalled to disk (see SuperModel::Marshal)
-  * On Redis
+  * Marshaled to disk (see SuperModel::Marshal)
+  * In Redis
 ActiveRecord support hasn't been added (but could be easily).
 
 You should use Redis on the server for performance reasons.
 
 = Limiting access
 
-By default, all model changes are synced with everyone. This isn't ideal for a lot of use cases - for example if a user had many 
-pages, those pages are specific to the user and shouldn't be synced with anyone else.
+By default, all model changes are synced with everyone. This isn't ideal for a lot of use cases - for example if a user had many pages, those pages are specific to the user and shouldn't be synced with anyone else.
 
 To limit access, you need to implement the following methods on the class.
 
