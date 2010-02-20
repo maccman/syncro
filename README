@@ -49,7 +49,7 @@ is created, the remote client is immediately notified.
 When clients connect for the first time, client objects are created. These record the time synchronisation happened (the last Scribe they've processed).
 
 Scribes & Clients can be stored in two ways:
-  * Marshalled to disk (see SuperModel::Marshal)
+  * Marshaled to disk (see SuperModel::Marshal)
   * On Redis
 ActiveRecord support hasn't been added (but could be easily).
 

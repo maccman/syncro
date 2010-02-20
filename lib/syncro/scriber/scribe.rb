@@ -24,7 +24,7 @@ module Syncro
           items = records.select {|item| 
             item.clients.blank? || item.clients.include?(client.to_s) 
           }
-          items  = items.reject {|item|
+          items = items.reject {|item|
             item.from_client == client.to_s
           }
           items.dup
