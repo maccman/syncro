@@ -25,6 +25,13 @@ module Syncro
         def scribe_authorized?(scribe)
           true
         end
+        
+        def scribe_options(value = nil)
+          @scribe_options = value if value
+          @scribe_options ||= {}
+          @scribe_options
+        end
+        alias_method :scribe_options=, :scribe_options
       end
     end
   end

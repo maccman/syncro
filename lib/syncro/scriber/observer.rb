@@ -55,11 +55,13 @@ module Syncro
       end
       
       def update(observed_method, object) #:nodoc:
+        return unless respond_to?(observed_method)
+        return unless allowed?(object, observed_method)
         # Is sending to clients disabled, or no clients specified?
         return unless scribe_clients(object)
         # Clients specified, but no non-disabled clients to send too
         return if scribe_clients(object).any? && active_clients(object).empty?
-        send(observed_method, object) if respond_to?(observed_method)
+        send(observed_method, object) 
       end
 
       def observed_class_inherited(subclass) #:nodoc:
@@ -80,6 +82,25 @@ module Syncro
       end
       
       protected
+        def allowed?(object, observed_method)
+          method = observed_method.to_s
+          method.gsub!(/before_|after_/, "")
+          
+          options = object.class.scribe_options
+          
+          options[:only]   = Array.wrap(options[:only]).map { |n| n.to_s }
+          options[:except] = Array.wrap(options[:except]).map { |n| n.to_s }
+          
+          if options[:only].any?
+            return false unless options[:only].include?(method)
+          end
+          
+          if options[:except].any?
+            return false if options[:except].include?(method)
+          end
+          true
+        end
+      
         def from_client
           self.class.from_client
         end
