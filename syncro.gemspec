@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex MacCaw"]
-  s.date = %q{2010-02-08}
+  s.date = %q{2010-02-25}
   s.description = %q{Sync Ruby classes between clients.}
   s.email = %q{info@eribium.org}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "examples/test_server.rb",
      "lib/syncro.rb",
      "lib/syncro/app.rb",
+     "lib/syncro/base.rb",
      "lib/syncro/client.rb",
      "lib/syncro/marshal.rb",
      "lib/syncro/model.rb",
@@ -32,12 +33,14 @@ Gem::Specification.new do |s|
      "lib/syncro/protocol/message_buffer.rb",
      "lib/syncro/redis.rb",
      "lib/syncro/redis/client.rb",
-     "lib/syncro/redis/scriber/scribe.rb",
+     "lib/syncro/redis/scribe.rb",
      "lib/syncro/response.rb",
      "lib/syncro/scriber.rb",
+     "lib/syncro/scriber/base.rb",
      "lib/syncro/scriber/model.rb",
      "lib/syncro/scriber/observer.rb",
      "lib/syncro/scriber/scribe.rb",
+     "lib/syncro/scriber/scribe_observer.rb",
      "syncro.gemspec"
   ]
   s.homepage = %q{http://github.com/maccman/syncro}
