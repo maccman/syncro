@@ -21,12 +21,12 @@ module Syncro
     def disconnect
     end
     
-    def sync
-      app.sync
+    def sync(&block)
+      app.sync(&block)
     end
     
-    def add_scribe(scribe)
-      app.add_scribe(scribe)
+    def add_scribe(scribe, &block)
+      app.add_scribe(scribe, &block)
     end
     
     def receive_data(data)

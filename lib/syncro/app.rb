@@ -19,7 +19,9 @@ module Syncro
           scribe.from_client = client.to_s
           scribe
         }
-        allowed_scribes = scribes.select {|s| allowed_klasses.include?(s.klass) }
+        allowed_scribes = scribes.select {|s| 
+          allowed_klasses.include?(s.klass) 
+        }
         allowed_scribes.each {|s| s.play }
         
         if scribes.any?
@@ -28,11 +30,16 @@ module Syncro
             scribes.last.id
           )
         end
+        yield if block_given?
       end
     end
     
-    def add_scribe(scribe)
-      invoke(:add_scribe, :scribe => scribe)
+    def add_scribe(scribe, &block)
+      invoke(
+        :add_scribe, 
+        :scribe => scribe, 
+        &block
+      )
     end
 
     protected    
