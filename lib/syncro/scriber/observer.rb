@@ -83,6 +83,8 @@ module Syncro
       
       protected
         def allowed?(object, observed_method)
+          return false unless object.scribe_create?
+          
           method = observed_method.to_s
           method.gsub!(/before_|after_/, "")
           

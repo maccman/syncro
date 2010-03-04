@@ -9,6 +9,10 @@ module Syncro
       def scribe_clients
         :all
       end
+      
+      def scribe_create?
+        true
+      end
 
       module ClassMethods
         def record(type, options = {})
