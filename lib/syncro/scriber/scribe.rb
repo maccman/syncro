@@ -21,7 +21,7 @@ module Syncro
         end
       
         def for_client(client)
-          items = records.select {|item| 
+          items = records.values.select {|item| 
             item.clients.blank? || item.clients.include?(client.to_s) 
           }
           items = items.reject {|item|
