@@ -4,7 +4,7 @@ module Syncro
     
     class << self
       def for(uid)
-        find_or_create_by_uid(uid)
+        find_or_create_by_uid(uid.to_s)
       end
     end
     
