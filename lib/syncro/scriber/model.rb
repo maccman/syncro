@@ -17,11 +17,11 @@ module Syncro
         end
         
         def scribe_play_create(scribe)
-          create(scribe.data)
+          create!(scribe.data)
         end
         
         def scribe_play_update(scribe)
-          update(scribe.data[0], scribe.data[1])
+          find(scribe.data[0]).update_attributes!(scribe.data[1])
         end
         
         def scribe_play_destroy(scribe)
