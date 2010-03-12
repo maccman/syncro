@@ -19,6 +19,7 @@ module Syncro
     end
     
     def disconnect
+      buffer.clear
     end
     
     def sync(&block)

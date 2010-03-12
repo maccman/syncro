@@ -1,6 +1,10 @@
 module Syncro
   module Protocol
     class MessageBuffer < StringIO
+      def clear
+        truncate(0)
+      end
+      
       # How much left to be read
       def left
         size - pos

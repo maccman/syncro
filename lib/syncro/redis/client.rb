@@ -20,6 +20,7 @@ module Syncro
       end
       
       def disconnect
+        self.buffer.clear
         self.class.connections.delete(self.id)
       end
     end
