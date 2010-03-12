@@ -113,7 +113,7 @@ module Syncro
           when :all
             []
           when Array
-            clients.empty? ? false : clients
+            clients.empty? ? false : clients.collect(&:to_s)
           else
             false
           end

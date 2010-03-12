@@ -8,9 +8,9 @@ module Syncro
       self.callbacks[client] << (prok||block)
     end
     
-    def self.call(client, args)
+    def self.call(client, *args)
     	callback = self.callbacks[client].shift
-			callback && callback.call(args)
+			callback && callback.call(*args)
     end
   end
 end
