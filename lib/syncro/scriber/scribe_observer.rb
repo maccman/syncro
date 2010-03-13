@@ -11,7 +11,7 @@ module Syncro
         else
           clients = rec.clients.map {|r| Client.for(r) }
         end
-        
+        clients.uniq!
         clients.each {|c| c.add_scribe(rec) }
       end
     
