@@ -9,7 +9,9 @@ module Syncro
 
       module ClassMethods
         def scribe_play(scribe) #:nodoc:
-          return unless scribe_authorized?(scribe)
+          unless scribe_authorized?(scribe)
+            raise "Unauthorised Scribe"
+          end
           Observer.from(scribe.from_client) do
             method = "scribe_play_#{scribe.type}"
             send(method, scribe) if respond_to?(method)
