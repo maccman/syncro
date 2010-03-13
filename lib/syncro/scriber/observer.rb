@@ -71,12 +71,13 @@ module Syncro
       def add_observer!(klass)
         klass.add_observer(self)
         
-        # For ActiveRecord
-        self.class.observed_methods.each do |method|
-          callback = :"_notify_observers_for_#{method}"
-          if (klass.instance_methods & [callback, callback.to_s]).empty?
-            klass.class_eval "def #{callback}; notify_observers(:#{method}); end"
-            klass.send(method, callback)
+        if defined?(ActiveRecord) && ActiveRecord::Base > klass
+          self.class.observed_methods.each do |method|
+            callback = :"_notify_observers_for_#{method}"
+            if (klass.instance_methods & [callback, callback.to_s]).empty?
+              klass.class_eval "def #{callback}; notify_observers(:#{method}); end"
+              klass.send(method, callback)
+            end
           end
         end
       end
