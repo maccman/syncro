@@ -6,8 +6,9 @@ module Syncro
       class << self
         def since(client, id)
           record = find(id)
-          index  = records.index(record)
-          items  = records.slice((index + 1)..-1)
+          values = records.values
+          index  = values.index(record)
+          items  = values.slice((index + 1)..-1)
           return [] unless items
           items  = items.select {|item| 
             item.clients.blank? || item.clients.include?(client.to_s) 
