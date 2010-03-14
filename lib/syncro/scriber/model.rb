@@ -23,7 +23,9 @@ module Syncro
         end
         
         def scribe_play_update(scribe)
-          find(scribe.data[0]).update_attributes!(scribe.data[1])
+          record = find(scribe.data[0])
+          record.update_attributes!(scribe.data[1])
+          record
         end
         
         def scribe_play_destroy(scribe)
