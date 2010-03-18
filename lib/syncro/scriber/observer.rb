@@ -16,7 +16,7 @@ module Syncro
         end
         
         def from(client, &block)
-          @from_client = client
+          @from_client = client.to_s
           result = yield
           @from_client = nil
           result

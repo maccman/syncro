@@ -11,8 +11,12 @@ module Syncro
         :all
       end
       
+      def scribe_disabled=(bool)
+        @scribe_disabled = bool
+      end
+      
       def scribe_disabled?
-        self.class.scribe_options[:disable]
+        @scribe_disabled ||= self.class.scribe_options[:disable]
       end
 
       module ClassMethods
