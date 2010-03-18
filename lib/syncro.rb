@@ -7,6 +7,12 @@ require "active_support/core_ext/class/attribute"
 
 module Syncro
   class SyncroError < StandardError; end
+  class InvokeError < SyncroError;
+    attr_reader :code
+    def initialize(code = 0)
+      @code = code
+    end
+  end
   
   def klasses
     @klasses ||= []

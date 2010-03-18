@@ -6,6 +6,14 @@ module Syncro
         base.extend ClassMethods
         Observer.instance.add_observer!(base)
       end
+      
+      def scribe_clients
+        :all
+      end
+      
+      def scribe_disabled?
+        self.class.scribe_options[:disable]
+      end
 
       module ClassMethods
         def scribe_play(scribe) #:nodoc:
@@ -39,7 +47,7 @@ module Syncro
           @scribe_options ||= {}
           @scribe_options
         end
-        alias_method :scribe_options=, :scribe_options
+        alias_method :scribe_options=, :scribe_options        
       end
     end
   end

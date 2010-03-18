@@ -64,10 +64,17 @@ module Syncro
           :last_scribe_id, 
           scribe.id
         )
+      rescue => e
+        error
+        raise(e)
       end
     
       def invoke_response
         Response.call(client, message[:result])
+      end
+      
+      def invoke_error
+        raise InvokeError.new(message[:code])
       end
       
       def allowed_klasses
@@ -86,6 +93,13 @@ module Syncro
         message = Protocol::Message.new
         message.type = :response
         message[:result] = res
+        client.send_message(message)
+      end
+      
+      def error(code = 0)
+        message = Protocol::Message.new
+        message.type = :error
+        message[:code] = code
         client.send_message(message)
       end
   end

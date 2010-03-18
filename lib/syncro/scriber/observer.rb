@@ -21,6 +21,17 @@ module Syncro
           @from_client = nil
           result
         end
+        
+        def disable(&block)
+          @disabled = true
+          result = yield
+          @disabled = false
+          result
+        end
+        
+        def disabled?
+          @disabled
+        end
       end
    
       def after_create(rec)
@@ -84,7 +95,8 @@ module Syncro
       
       protected
         def allowed?(object, observed_method)
-          return false unless object.scribe_create?
+          return false if self.class.disabled?
+          return false if object.scribe_disabled?
           
           method = observed_method.to_s
           method.gsub!(/before_|after_/, "")
