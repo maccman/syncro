@@ -1,6 +1,7 @@
 module Syncro
   class Client
     include SuperModel::Marshal::Model
+    marshal :except => :connection
   end
   
   module Scriber

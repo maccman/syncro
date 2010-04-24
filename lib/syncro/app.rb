@@ -45,7 +45,7 @@ module Syncro
     protected    
       def invoke_sync
         result = begin
-          if message[:from]
+          if message[:from].present?
             Scriber::Scribe.since(client, message[:from])
           else
             Scriber::Scribe.for_client(client)
