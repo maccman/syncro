@@ -23,14 +23,15 @@ module Syncro
         end
         
         def disable(&block)
-          @disabled = true
+          @disabled ||= 0
+          @disabled += 1
           result = yield
-          @disabled = false
+          @disabled -= 1
           result
         end
         
         def disabled?
-          @disabled
+          @disabled && @disabled > 0
         end
       end
    
