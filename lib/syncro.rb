@@ -6,6 +6,7 @@ require "active_support"
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/object/blank"
 require "active_support/core_ext/module/delegation"
+require "active_support/core_ext/string/inflections"
 
 module Syncro
   class SyncroError < StandardError; end

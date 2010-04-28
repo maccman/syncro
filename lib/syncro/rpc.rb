@@ -13,7 +13,7 @@ module Syncro
       klass = message[:klass].constantize
       
       unless klass.respond_to?(message[:method])
-        app.error(404)
+        app.error(405)
       end
       
       result = klass.send(message[:method], *message[:args])
@@ -23,7 +23,7 @@ module Syncro
         
     module Expose
       def self.included(base)
-        RPC.klasses << base
+        RPC.klasses << base.name
       end      
     end
   end
