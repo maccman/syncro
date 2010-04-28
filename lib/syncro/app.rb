@@ -82,6 +82,13 @@ module Syncro
         raise(e)
       end
     
+      def invoke_rpc
+        RPC.invoke(self, message)
+      rescue => e
+        error
+        raise(e)
+      end
+      
       def invoke_response
         Response.call(client, message[:result])
       end
@@ -89,11 +96,7 @@ module Syncro
       def invoke_error
         raise InvokeError.new(message[:code])
       end
-      
-      def invoke_rpc
-        RPC.invoke(self, message)
-      end
-      
+            
       def allowed_klasses
         Syncro.klasses.map(&:to_s)
       end
