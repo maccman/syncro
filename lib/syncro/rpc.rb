@@ -18,7 +18,7 @@ module Syncro
         return
       end
       
-      result = klass.rpc_invoke(message[:method], *message[:args])
+      result = klass.rpc_invoke(client, message[:method], *message[:args])
       client.app.respond(result)
     end
     module_function :invoke
@@ -30,8 +30,8 @@ module Syncro
       end
       
       module ClassMethods
-        def rpc_invoke(client, *args)
-          send(*args)
+        def rpc_invoke(client, method, *args)
+          send(method, *args)
         end
       end
     end
