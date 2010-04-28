@@ -46,7 +46,8 @@ module Syncro
       end
       
       def last_scribe_id(client)
-        client.last_scribe_id
+        scribe = Scriber::Scribe.for_client(client)
+        scribe && scribe.last.id
       end
     end
   end

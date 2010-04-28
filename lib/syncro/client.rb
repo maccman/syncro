@@ -8,17 +8,15 @@ module Syncro
       end
     end
     
-    attributes :uid, :connection, :last_scribe_id
+    attributes :uid, :connection, :last_scribe_id, :synced
     
     delegate :sync, :add_scribe, :rpc, :to => :app
     
-    def synced?
-      !!self.last_scribe_id?
-    end
-    
     def uptodate!
       rpc("Syncro::RPC::Default", :last_scribe_id) do |id|
-        update_attribute(:last_scribe_id, id)
+        self.last_scribe_id = id
+        self.synced = true
+        self.save!
       end
     end
 

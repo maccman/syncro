@@ -25,11 +25,11 @@ module Syncro
         allowed_scribes.each {|s| s.play }
         
         if scribes.any?
-          client.update_attribute(
-            :last_scribe_id, 
-            scribes.last.id
-          )
+          client.last_scribe_id = scribes.last.id
         end
+        client.synced = true
+        client.save!
+        
         yield if block_given?
       end
     end
