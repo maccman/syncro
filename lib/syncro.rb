@@ -5,6 +5,7 @@ gem "activesupport"
 require "active_support"
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/object/blank"
+require "active_support/core_ext/module/delegation"
 
 module Syncro
   class SyncroError < StandardError; end
@@ -30,6 +31,7 @@ require "syncro/model"
 require "syncro/protocol/message"
 require "syncro/protocol/message_buffer"
 require "syncro/response"
+require "syncro/rpc"
 require "syncro/scriber"
 require "syncro/scriber/base"
 require "syncro/scriber/model"

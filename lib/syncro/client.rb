@@ -9,7 +9,11 @@ module Syncro
     end
     
     attributes :uid, :connection, :last_scribe_id
-        
+    
+    delegate :sync, :add_scribe, 
+             :rpc,  :arpc, 
+             :to => :app
+ 
     def connected?
       !!self.connection
     end
@@ -21,15 +25,7 @@ module Syncro
     def disconnect
       buffer.clear
     end
-    
-    def sync(&block)
-      app.sync(&block)
-    end
-    
-    def add_scribe(scribe, &block)
-      app.add_scribe(scribe, &block)
-    end
-    
+        
     def receive_data(data)
       buffer << data
       buffer.messages.each do |msg|

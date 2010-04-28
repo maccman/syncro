@@ -41,6 +41,16 @@ module Syncro
         &block
       )
     end
+    
+    def rpc(klass, method, *args, &block)
+      invoke(
+        :rpc,
+        :klass  => klass,
+        :method => method,
+        :args   => args,
+        &block
+      )
+    end
 
     protected    
       def invoke_sync
@@ -78,6 +88,10 @@ module Syncro
       
       def invoke_error
         raise InvokeError.new(message[:code])
+      end
+      
+      def invoke_rpc
+        RPC.invoke(self, message)
       end
       
       def allowed_klasses
