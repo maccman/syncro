@@ -25,6 +25,7 @@ module Syncro
         
     module Expose
       def self.included(base)
+        base.extend ClassMethods
         RPC.klasses << base.name
       end
       
