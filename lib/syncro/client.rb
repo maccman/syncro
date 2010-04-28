@@ -10,10 +10,8 @@ module Syncro
     
     attributes :uid, :connection, :last_scribe_id
     
-    delegate :sync, :add_scribe, 
-             :rpc,  :arpc, 
-             :to => :app
- 
+    delegate :sync, :add_scribe, :rpc, :to => :app
+
     def connected?
       !!self.connection
     end

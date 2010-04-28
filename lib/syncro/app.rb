@@ -101,6 +101,7 @@ module Syncro
         Syncro.klasses.map(&:to_s)
       end
       
+    public
       def invoke(type, hash = {}, &block)
         message = Protocol::Message.new
         message.type = type
