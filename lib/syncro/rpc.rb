@@ -40,8 +40,9 @@ module Syncro
       include Expose
       extend self
       
-      def rpc_invoke(*args)
-        send(*args)
+      def rpc_invoke(client, method *args)
+        args.unshift(client)
+        send(method, *args)
       end
       
       def last_scribe_id(client)
