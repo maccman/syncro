@@ -8,12 +8,14 @@ module Syncro
     def invoke(app, message)
       unless klasses.include?(message[:klass])
         app.error(404)
+        return
       end
       
       klass = message[:klass].constantize
       
       unless klass.respond_to?(message[:method])
         app.error(405)
+        return
       end
       
       result = klass.send(message[:method], *message[:args])
