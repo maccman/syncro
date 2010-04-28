@@ -40,7 +40,7 @@ module Syncro
       include Expose
       extend self
       
-      def rpc_invoke(client, method *args)
+      def rpc_invoke(client, method, *args)
         args.unshift(client)
         send(method, *args)
       end
