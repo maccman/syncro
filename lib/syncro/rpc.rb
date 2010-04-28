@@ -5,28 +5,47 @@ module Syncro
     end
     module_function :klasses
     
-    def invoke(app, message)
+    def invoke(client, message)
       unless klasses.include?(message[:klass])
-        app.error(404)
+        client.app.error(404)
         return
       end
       
       klass = message[:klass].constantize
       
       unless klass.respond_to?(message[:method])
-        app.error(405)
+        client.app.error(405)
         return
       end
       
-      result = klass.send(message[:method], *message[:args])
-      app.respond(result)
+      result = klass.rpc_invoke(message[:method], *message[:args])
+      client.app.respond(result)
     end
     module_function :invoke
         
     module Expose
       def self.included(base)
         RPC.klasses << base.name
-      end      
+      end
+      
+      module ClassMethods
+        def rpc_invoke(client, *args)
+          send(*args)
+        end
+      end
+    end
+    
+    module Default
+      include Expose
+      extend self
+      
+      def rpc_invoke(*args)
+        send(*args)
+      end
+      
+      def last_scribe_id(client)
+        client.last_scribe_id
+      end
     end
   end
 end

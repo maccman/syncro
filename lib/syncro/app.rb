@@ -83,7 +83,7 @@ module Syncro
       end
     
       def invoke_rpc
-        RPC.invoke(self, message)
+        RPC.invoke(client, message)
       rescue => e
         error
         raise(e)

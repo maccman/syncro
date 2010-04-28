@@ -11,6 +11,16 @@ module Syncro
     attributes :uid, :connection, :last_scribe_id
     
     delegate :sync, :add_scribe, :rpc, :to => :app
+    
+    def synced?
+      !!self.last_scribe_id?
+    end
+    
+    def uptodate!
+      rpc("Syncro::RPC::Default", :last_scribe_id) do |id|
+        update_attribute(:last_scribe_id, id)
+      end
+    end
 
     def connected?
       !!self.connection
@@ -66,11 +76,11 @@ module Syncro
       super(options)
     end
     
-    protected
-      def app
-        @app ||= App.new(self)
-      end
+    def app
+      @app ||= App.new(self)
+    end
     
+    protected
       def buffer
         @buffer ||= Protocol::MessageBuffer.new
       end
