@@ -5,8 +5,8 @@ module Syncro
       
       class << self
         def since(client, id)
-          items  = redis.zrange(redis_key(:clients, client), id, -1)
-          items += redis.zrange(redis_key(:clients, :all),   id, -1)
+          items  = redis.zrangebyscore(redis_key(:clients, client), "(#{id}", "+inf")
+          items += redis.zrangebyscore(redis_key(:clients, :all),   "(#{id}", "+inf")
           items  = from_ids(items)
           items  = items.reject {|item|
             item.from_client == client.to_s
