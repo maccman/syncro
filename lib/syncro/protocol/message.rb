@@ -11,8 +11,16 @@ module Syncro
       	self[:type].try(:to_sym)
       end
       
-      def type=(sym)
-      	self[:type] = sym
+      def type=(val)
+      	self[:type] = val
+      end
+      
+      def id
+        self[:id]
+      end
+
+      def id=(val)
+        self[:id] = val
       end
       
       def serialize

@@ -64,6 +64,11 @@ module Syncro
       end
     end
     
+    def msg_id
+      @msg_id ||= 0
+      @msg_id += 1
+    end
+    
     def to_s
       (uid || id).to_s
     end

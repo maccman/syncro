@@ -90,7 +90,7 @@ module Syncro
       end
       
       def invoke_response
-        Response.call(client, message[:result])
+        Response.call(client, message.id, message[:result])
       end
       
       def invoke_error
@@ -103,16 +103,18 @@ module Syncro
       
     public
       def invoke(type, hash = {}, &block)
-        message = Protocol::Message.new
+        message      = Protocol::Message.new
         message.type = type
         message.merge!(hash)
-        Response.expect(client, &block)
+        message.id   = client.msg_id
+        Response.expect(client, message.id, &block)
         client.send_message(message)
       end
     
       def respond(res = nil)
-        message = Protocol::Message.new
+        message      = Protocol::Message.new
         message.type = :response
+        message.id   = @message.id if @message
         message[:result] = res
         client.send_message(message)
       end
