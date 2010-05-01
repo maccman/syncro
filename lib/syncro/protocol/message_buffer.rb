@@ -43,11 +43,7 @@ module Syncro
       private      
         def read_I16
           dat = read(2)
-          len, = dat.unpack('n')
-          if (len > 0x7fff)
-            len = 0 - ((len - 1) ^ 0xffff)
-          end
-          len
+          dat.unpack('n')[0]
         end
     end
   end
