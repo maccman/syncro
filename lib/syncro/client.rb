@@ -6,6 +6,12 @@ module Syncro
       def for(uid)
         find_or_create_by_uid(uid.to_s)
       end
+      
+      def all
+        # Don't deep_dup the values, since the EM 
+        # connection can't be marshaled.
+        collection.new(records.values)
+      end
     end
     
     attributes :uid, :connection, :last_scribe_id, :synced
