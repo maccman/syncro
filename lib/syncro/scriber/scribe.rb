@@ -16,7 +16,7 @@ module Syncro
           items  = items.reject {|item|
             item.from_client == client.to_s
           }
-          items.dup
+          items.deep_dup
         rescue SuperModel::UnknownRecord
           []
         end
@@ -28,7 +28,7 @@ module Syncro
           items = items.reject {|item|
             item.from_client == client.to_s
           }
-          items.dup
+          items.deep_dup
         end
       end
     
@@ -48,7 +48,7 @@ module Syncro
         options[:except] << :clients
         options[:except] << :from_client
         super(options)
-      end
+      end      
     end
   end
 end
