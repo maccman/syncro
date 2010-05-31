@@ -34,7 +34,7 @@ module Syncro
       end
     end
     
-    def add_scribe(scribe, &block)
+    def add_scribe(scribe, &block)      
       invoke(
         :add_scribe, 
         :scribe => scribe, 
