@@ -49,6 +49,7 @@ module Syncro
           hash[key] = to
           hash 
         }
+        return if changed_to.empty?
         rec.class.record(
           :update, 
           :data        => [rec.id, changed_to], 
