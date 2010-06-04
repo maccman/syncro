@@ -62,7 +62,7 @@ module Syncro
     def send_message(message)
       return unless connected?
       if connection.respond_to?(:send_message)
-        connection.send_message(message)
+        connection.send_message(message.to_json)
       elsif connection.respond_to?(:send_data)
         connection.send_data(message.serialize)
       else
