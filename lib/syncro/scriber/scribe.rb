@@ -3,6 +3,10 @@ module Syncro
     class Scribe < SuperModel::Base
       include SuperModel::RandomID
       
+      # In Rails 3, this defaults to true.
+      # We don't want it, otherwise the protocols invalid.
+      self.include_root_in_json = false
+      
       class << self
         def since(client, id)
           record = find(id)
