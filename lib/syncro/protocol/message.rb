@@ -1,5 +1,3 @@
-require "json"
-
 module Syncro
   module Protocol
     class Message < HashWithIndifferentAccess
