@@ -2,7 +2,7 @@ module Syncro
   module Protocol
     class Message < HashWithIndifferentAccess
       def self.fromJSON(str)
-      	self.new(JSON.parse(str))
+      	self.new(ActiveSupport::JSON.decode(str))
       end
 
       def type
