@@ -22,7 +22,7 @@ module Syncro
       end
       
       def serialize
-        data = ActiveSupport::JSON.encode(self)
+        data = self.to_json
         [data.length].pack('n') + data
       end    
     end
