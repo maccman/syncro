@@ -47,7 +47,7 @@ module Syncro
       
       def last_scribe_id(client)
         scribes = Scriber::Scribe.for_client(client)
-        return if scribes.empty?
+        return 0 if scribes.empty?
         scribes.last.id
       end
     end
