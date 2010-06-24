@@ -96,6 +96,10 @@ module Syncro
       def invoke_error
         raise InvokeError.new(message[:code])
       end
+      
+      def invoke_noop
+        respond true
+      end
             
       def allowed_klasses
         Syncro.klasses.map(&:to_s)
