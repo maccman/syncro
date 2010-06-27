@@ -3,16 +3,9 @@ module Syncro
     class ScribeObserver
       include Singleton
     
-      def after_create(rec)
-        if rec.clients.blank?
-          clients = Client.all.reject {|client| 
-            client.to_s == rec.from_client
-          }
-        else
-          clients = rec.clients.map {|r| Client.for(r) }
-        end
-        clients.uniq!
-        clients.each {|c| c.add_scribe(rec) }
+      def after_create(scribe)
+        sessions = scribe.to_sessions
+        sessions.each {|c| c.add_scribe(scribe) }
       end
     
       def update(observed_method, object) #:nodoc:

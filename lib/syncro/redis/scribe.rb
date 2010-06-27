@@ -4,13 +4,10 @@ module Syncro
       include SuperModel::Redis::Model
       
       class << self
-        def since(client, id)
-          items  = redis.zrangebyscore(redis_key(:clients, client), "(#{id}", "+inf")
-          items += redis.zrangebyscore(redis_key(:clients, :all),   "(#{id}", "+inf")
+        def since(client, client_id)
+          items  = redis.zrangebyscore(redis_key(:clients, client), "(#{client_id}", "+inf")
+          items += redis.zrangebyscore(redis_key(:clients, :all),   "(#{client_id}", "+inf")
           items  = from_ids(items)
-          items  = items.reject {|item|
-            item.from_client == client.to_s
-          }
           items
         end
 
@@ -25,11 +22,11 @@ module Syncro
 
       protected
         def index_clients
-          if clients.blank?
+          if to_all
             redis.zadd(self.class.redis_key(:clients, :all), id, id)
           else
-            clients.each {|client|
-              redis.zadd(self.class.redis_key(:clients, client), id, id)
+            client_ids.each {|client_id|
+              redis.zadd(self.class.redis_key(:clients, client_id), id, id)
             }
           end
         end

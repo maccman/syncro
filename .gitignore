@@ -1,4 +1,4 @@
 pkg
 test.rb
-dump.db
+*.db
 *.gem

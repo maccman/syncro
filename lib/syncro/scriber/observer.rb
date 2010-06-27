@@ -6,19 +6,20 @@ module Syncro
       self.observed_methods = []
       
       class << self
-        def method_added(method)
+        # So we can use this Observer on ActiveRecord classes
+        def method_added(method) #:nodoc:
           return unless defined?(ActiveRecord)
           self.observed_methods += [method] if ActiveRecord::Callbacks::CALLBACKS.include?(method.to_sym)
         end
         
-        def from_client
-          @from_client
+        def from_scribe
+          @scribe
         end
         
-        def from(client, &block)
-          @from_client = client.to_s
-          result = yield
-          @from_client = nil
+        def with_scribe(scribe, &block)
+          @scribe = scribe
+          result  = yield
+          @scribe = nil
           result
         end
         
@@ -39,8 +40,8 @@ module Syncro
         rec.class.record(
           :create, 
           :data        => rec.attributes, 
-          :clients     => active_clients(rec),
-          :from_client => from_client
+          :client_uids => rec.scribe_clients,
+          :from_scribe => self.class.from_scribe
         )
       end
       
@@ -53,8 +54,8 @@ module Syncro
         rec.class.record(
           :update, 
           :data        => [rec.id, changed_to], 
-          :clients     => active_clients(rec),
-          :from_client => from_client
+          :client_uids => rec.scribe_clients,
+          :from_scribe => self.class.from_scribe
         )
       end
       
@@ -62,18 +63,15 @@ module Syncro
         rec.class.record(
           :destroy, 
           :data        => [rec.id], 
-          :clients     => active_clients(rec),
-          :from_client => from_client
+          :client_uids => rec.scribe_clients,
+          :from_scribe => self.class.from_scribe
         )
       end
       
       def update(observed_method, object) #:nodoc:
         return unless respond_to?(observed_method)
         return unless allowed?(object, observed_method)
-        # Is sending to clients disabled, or no clients specified?
-        return unless scribe_clients(object)
-        # Clients specified, but no non-disabled clients to send too
-        return if scribe_clients(object).any? && active_clients(object).empty?
+        return if object.scribe_clients.blank?
         send(observed_method, object) 
       end
 
@@ -81,7 +79,7 @@ module Syncro
         subclass.add_observer(self)
       end
       
-      def add_observer!(klass)
+      def add_observer!(klass) #:nodoc:
         klass.add_observer(self)
         
         if defined?(ActiveRecord) && ActiveRecord::Base > klass
@@ -116,26 +114,6 @@ module Syncro
             return false if options[:except].include?(method)
           end
           true
-        end
-      
-        def from_client
-          self.class.from_client
-        end
-        
-        def scribe_clients(object)
-          clients = object.scribe_clients
-          case clients
-          when :all
-            []
-          when Array
-            clients.empty? ? false : clients.collect(&:to_s)
-          else
-            false
-          end
-        end
-      
-        def active_clients(object)
-          scribe_clients(object) - [from_client]
         end
     end
   end

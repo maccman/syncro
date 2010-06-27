@@ -5,21 +5,21 @@ module Syncro
     end
     module_function :klasses
     
-    def invoke(client, message)
+    def invoke(session, message)
       unless klasses.include?(message[:klass])
-        client.app.error(404)
+        session.app.error(404)
         return
       end
       
       klass = message[:klass].constantize
       
       unless klass.respond_to?(message[:method])
-        client.app.error(405)
+        session.app.error(405)
         return
       end
       
-      result = klass.rpc_invoke(client, message[:method], *message[:args])
-      client.app.respond(result)
+      result = klass.rpc_invoke(session, message[:method], *message[:args])
+      session.app.respond(result)
     end
     module_function :invoke
         
@@ -30,7 +30,7 @@ module Syncro
       end
       
       module ClassMethods
-        def rpc_invoke(client, method, *args)
+        def rpc_invoke(session, method, *args)
           send(method, *args)
         end
       end
@@ -40,13 +40,13 @@ module Syncro
       include Expose
       extend self
       
-      def rpc_invoke(client, method, *args)
-        args.unshift(client)
+      def rpc_invoke(session, method, *args)
+        args.unshift(session)
         send(method, *args)
       end
       
-      def last_scribe_id(client)
-        scribes = Scriber::Scribe.for_client(client)
+      def last_scribe_id(session)
+        scribes = session.client.scribes
         return 0 if scribes.empty?
         scribes.last.id
       end

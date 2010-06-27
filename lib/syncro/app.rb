@@ -1,9 +1,13 @@
 module Syncro
   class App
-    attr_reader :client, :message
+    attr_reader :session, :message
     
-    def initialize(client)
-      @client = client
+    def initialize(session)
+      @session = session
+    end
+    
+    def client
+      @session.client
     end
     
     def call(message)
@@ -16,7 +20,8 @@ module Syncro
       invoke(:sync, :from => client.last_scribe_id) do |resp|
         scribes = resp.map {|s| 
           scribe = Scriber::Scribe.new(s)
-          scribe.from_client = client.to_s
+          scribe.from_client  = client
+          scribe.from_session = session
           scribe
         }
         allowed_scribes = scribes.select {|s| 
@@ -66,7 +71,8 @@ module Syncro
       
       def invoke_add_scribe
         scribe = Scriber::Scribe.new(message[:scribe])
-        scribe.from_client = client.to_s
+        scribe.from_client  = client
+        scribe.from_session = session
         unless allowed_klasses.include?(scribe.klass)
           error(403)
           return
@@ -90,7 +96,7 @@ module Syncro
       end
       
       def invoke_response
-        Response.call(client, message.id, message[:result])
+        Response.call(session.object_id, message.id, message[:result])
       end
       
       def invoke_error
@@ -110,9 +116,9 @@ module Syncro
         message      = Protocol::Message.new
         message.type = type
         message.merge!(hash)
-        message.id   = client.msg_id
-        Response.expect(client, message.id, &block)
-        client.send_message(message)
+        message.id   = session.msg_id
+        Response.expect(session.object_id, message.id, &block)
+        session.send_message(message)
       end
     
       def respond(res = nil)
@@ -120,14 +126,14 @@ module Syncro
         message.type = :response
         message.id   = @message.id if @message
         message[:result] = res
-        client.send_message(message)
+        session.send_message(message)
       end
       
       def error(code = 0)
         message = Protocol::Message.new
         message.type = :error
         message[:code] = code
-        client.send_message(message)
+        session.send_message(message)
       end
   end
 end

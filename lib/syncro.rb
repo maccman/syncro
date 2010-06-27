@@ -1,4 +1,4 @@
-gem "supermodel"
+gem "supermodel", ">= 0.1.3"
 require "supermodel"
 
 gem "activesupport"
@@ -34,6 +34,7 @@ require "syncro/protocol/message"
 require "syncro/protocol/message_buffer"
 require "syncro/response"
 require "syncro/rpc"
+require "syncro/session"
 require "syncro/scriber"
 require "syncro/scriber/base"
 require "syncro/scriber/model"

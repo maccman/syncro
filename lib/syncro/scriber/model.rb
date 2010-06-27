@@ -24,7 +24,7 @@ module Syncro
           unless scribe_authorized?(scribe)
             raise "Unauthorised Scribe"
           end
-          Observer.from(scribe.from_client) do
+          Observer.with_scribe(scribe) do
             method = "scribe_play_#{scribe.type}"
             send(method, scribe) if respond_to?(method)
           end

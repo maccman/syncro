@@ -1,10 +1,14 @@
-require File.join(File.dirname(__FILE__), *%w[.. lib syncro])
+$: << File.expand_path(File.join(File.dirname(__FILE__), ".."))
+require File.join(*%w[lib syncro])
+
 require "eventmachine"
 require "supermodel"
 
 class Test < SuperModel::Base
   include SuperModel::Marshal::Model
   include Syncro::Model
+  
+  attributes :name
   
   def scribe_clients
     [:client_uuid1, :client_uuid2]
@@ -13,14 +17,14 @@ end
 
 class MyConnection < EM::Connection
   def post_init
-    @client = Syncro::Client.for(:client_uuid1)
-    @client.connect(self)
-    @client.sync
+    @client  = Syncro::Client.for(:client_uuid2)
+    @session = Syncro::Session.new(self, @client)
+    @session.sync
   end
   
   def receive_data(data)
     puts "Received: #{data}"
-    @client.receive_data(data)
+    @session.receive_data(data)
   end
   
   def send_data(data)
@@ -29,7 +33,7 @@ class MyConnection < EM::Connection
   end
   
   def unbind
-    @client.disconnect
+    @session.disconnect
   end
 end
 
