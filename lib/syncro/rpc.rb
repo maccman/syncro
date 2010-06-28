@@ -46,7 +46,8 @@ module Syncro
       end
       
       def last_scribe_id(session)
-        scribes = session.client.scribes
+        client  = session.client.reload
+        scribes = client.scribes
         return 0 if scribes.empty?
         scribes.last.id
       end

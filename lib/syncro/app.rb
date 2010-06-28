@@ -7,10 +7,11 @@ module Syncro
     end
     
     def client
-      @session.client
+      @client ||= @session.client.reload
     end
     
     def call(message)
+      @client  = nil
       @message = message
       method   = "invoke_#{message.type}"
       send(method) if respond_to?(method)
@@ -89,7 +90,7 @@ module Syncro
       end
     
       def invoke_rpc
-        RPC.invoke(client, message)
+        RPC.invoke(session, message)
       rescue => e
         error
         raise(e)

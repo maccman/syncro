@@ -4,9 +4,9 @@ module Syncro
       include SuperModel::Redis::Model
       
       class << self
-        def since(client, client_id)
-          items  = redis.zrangebyscore(redis_key(:clients, client), "(#{client_id}", "+inf")
-          items += redis.zrangebyscore(redis_key(:clients, :all),   "(#{client_id}", "+inf")
+        def since(client, scribe_id)
+          items  = redis.zrangebyscore(redis_key(:clients, client.id), "(#{scribe_id}", "+inf")
+          items += redis.zrangebyscore(redis_key(:clients, :all),   "(#{scribe_id}", "+inf")
           items  = from_ids(items)
           items
         end
@@ -16,7 +16,7 @@ module Syncro
         end
       end
       
-      serialize :data, :clients
+      serialize :data, :client_ids
 
       after_save :index_clients
 

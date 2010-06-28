@@ -9,12 +9,15 @@ module Syncro
       
       class << self
         def since(client, scribe_id)
+          puts "SINCE"
+          p client
+          p scribe_id
           record = find(scribe_id)
           values = records.values
           index  = values.index(record)
           items  = values.slice((index + 1)..-1)
           items  = items.select {|item| 
-            item.to_all || item.clients.include?(client.to_s)
+            item.to_all || item.clients.include?(client)
           }
           items.deep_dup
         rescue SuperModel::UnknownRecord

@@ -18,7 +18,7 @@ module Syncro
     delegate :sync, :add_scribe, :rpc, :to => :app
     
     attr_reader   :connection
-    attr_accessor :client_id
+    attr_accessor :client
     
     def initialize(connection, client = nil)
       @connection = connection
@@ -26,18 +26,13 @@ module Syncro
       self.class.records << self
     end
     
+    def client
+      @client || raise("Client not set")
+    end
+    
     def disconnect
       buffer.clear
       self.class.records.delete(self)
-    end
-    
-    def client
-      raise "Client not set" unless client_id
-      Client.find(client_id)
-    end
-    
-    def client=(client)
-      self.client_id = (client && client.id)
     end
     
     def receive_data(data)
