@@ -9,9 +9,6 @@ module Syncro
       
       class << self
         def since(client, scribe_id)
-          puts "SINCE"
-          p client
-          p scribe_id
           record = find(scribe_id)
           values = records.values
           index  = values.index(record)

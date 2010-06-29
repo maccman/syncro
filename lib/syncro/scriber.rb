@@ -11,7 +11,7 @@ module Syncro
     module_function :disable
     
     def active?
-      !!Observer.from_client
+      !!Observer.from_scribe
     end
     module_function :active?
   end
