@@ -60,14 +60,16 @@ module Syncro
 
     protected    
       def invoke_sync
-        result = begin
+        scribes = begin
           if message[:from].present?
             Scriber::Scribe.since(client, message[:from])
           else
             Scriber::Scribe.for_client(client)
           end
         end
-        respond(result)
+        # Otherwise clients get duplicate scribes
+        scribes.reject! {|s| s.from_client == client }
+        respond(scribes)
       end
       
       def invoke_add_scribe
