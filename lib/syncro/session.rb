@@ -6,6 +6,7 @@ module Syncro
       end
       
       def find(id)
+        id = Integer(id) # Only integer IDs
         records.find {|r| r.id == id }
       end
       
