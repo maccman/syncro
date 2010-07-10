@@ -81,15 +81,9 @@ module Syncro
       
       def add_observer!(klass) #:nodoc:
         klass.add_observer(self)
-        
-        if defined?(ActiveRecord) && ActiveRecord::Base > klass
-          self.class.observed_methods.each do |method|
-            callback = :"_notify_observers_for_#{method}"
-            if (klass.instance_methods & [callback, callback.to_s]).empty?
-              klass.class_eval "def #{callback}; notify_observers(:#{method}); end"
-              klass.send(method, callback)
-            end
-          end
+        return unless defined?(ActiveRecord)
+        if observe_callbacks? && ActiveRecord::Base > klass
+          define_callbacks(klass)
         end
       end
       
@@ -114,6 +108,27 @@ module Syncro
             return false if options[:except].include?(method)
           end
           true
+        end
+        
+        def observe_callbacks?
+          self.class.observed_methods.any?
+        end
+        
+        # Ugg, ActiveRecord appeasement
+        def define_callbacks(klass)
+          existing_methods = klass.instance_methods.map(&:to_sym)
+          observer = self
+          observer_name = observer.class.name.underscore.gsub('/', '__')
+
+          self.class.observed_methods.each do |method|
+            callback = :"_notify_#{observer_name}_for_#{method}"
+            unless existing_methods.include? callback
+              klass.send(:define_method, callback) do  # def _notify_user_observer_for_before_save
+                observer.update(method, self)          #   observer.update(:before_save, self)
+              end                                      # end
+              klass.send(method, callback)             # before_save :_notify_user_observer_for_before_save
+            end
+          end
         end
     end
   end
