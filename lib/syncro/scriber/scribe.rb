@@ -85,6 +85,7 @@ module Syncro
         options[:except] << :client_ids
         options[:except] << :from_session_id
         options[:except] << :from_client_id
+        options[:except] << :to_all
         serializable_hash(options)
       end
       
