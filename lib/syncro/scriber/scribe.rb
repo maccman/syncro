@@ -76,6 +76,7 @@ module Syncro
         # Don't want to send any data from sessions that
         # originally sent the same data to us.
         sessions.delete(from_session)
+        sessions.uniq!
         sessions
       end
             
