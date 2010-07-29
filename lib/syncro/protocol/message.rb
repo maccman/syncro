@@ -3,6 +3,8 @@ module Syncro
     class Message < HashWithIndifferentAccess
       def self.fromJSON(str)
       	self.new(ActiveSupport::JSON.decode(str))
+    	rescue StandardError
+    	  raise "Invalid JSON string: #{str}"
       end
 
       def type
