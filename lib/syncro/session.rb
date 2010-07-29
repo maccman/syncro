@@ -32,8 +32,9 @@ module Syncro
     end
     
     def disconnect
-      buffer.clear
       self.class.records.delete(self)
+      buffer.clear
+      @connection = nil
     end
     
     def receive_data(data)
@@ -58,6 +59,7 @@ module Syncro
     end
     
     def send_message(message)
+      return unless connection
       if connection.respond_to?(:send_message)
         connection.send_message(message.to_json)
       elsif connection.respond_to?(:send_data)
